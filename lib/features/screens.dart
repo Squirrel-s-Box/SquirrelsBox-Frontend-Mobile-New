@@ -1,0 +1,10 @@
+export 'authentication/presentation/pages/authentication_page.dart';
+export 'downloads/pages/downloads_page.dart';
+export 'favorites/pages/favorites_page.dart';
+export 'home/pages/home_page.dart';
+export 'management/presentation/pages/boxes_page.dart';
+export 'management/presentation/pages/items_page.dart';
+export 'management/presentation/pages/item_specifications_page.dart';
+export 'management/presentation/pages/sections_page.dart';
+export 'management/presentation/pages/take_picture_screen.dart';
+export 'profile/presentation/pages/profile_page.dart';
