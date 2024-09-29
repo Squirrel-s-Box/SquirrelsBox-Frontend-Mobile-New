@@ -49,7 +49,7 @@ class BoxBloc extends Bloc<BoxEvent, BoxState> {
         boxService.addBox(
             Box(
               name: event.name
-            ), '1'
+            ), event.userCode
         ).asStream(),
         onData: (boxes) => state.copyWith(
           status: BoxStatus.success,

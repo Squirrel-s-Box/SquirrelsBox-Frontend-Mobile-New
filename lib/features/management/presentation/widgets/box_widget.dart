@@ -6,7 +6,7 @@ import '../../../../config/theme/colors.dart';
 import '../../domain/models/box.dart';
 import 'modals/modals.dart';
 
-class BoxWidget extends StatelessWidget {
+class BoxWidget extends StatefulWidget {
   final Box box;
   const BoxWidget({
     required this.box,
@@ -14,103 +14,97 @@ class BoxWidget extends StatelessWidget {
   });
 
   @override
+  State<BoxWidget> createState() => _BoxWidgetState();
+}
+
+class _BoxWidgetState extends State<BoxWidget> {
+
+  @override
   Widget build(BuildContext context) {
     final appRouter = context.read<RouterCubit>();
 
-    return GestureDetector(
-      onTap: () => appRouter.goSections(box.id.toString(), box.name!),
-      child: Column(
-        children: [
-          Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+    return Dismissible(
+      key: Key(widget.box.name!),
+      confirmDismiss: (direction) async {
+        showDialog(context: context,
+            builder: (context) => DeleteBoxModal(box: widget.box)
+        );
+        return false;
+      },
+      //background: Container(color: Colors.grey),
+      child: GestureDetector(
+        onTap: () => appRouter.goSections(widget.box.id.toString(), widget.box.name!),
+        onLongPress: () {
+          _showEditOptions(context);
+        },
+        child: Column(
+          children: [
+            Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: const BoxDecoration(
+                  color: AppColors.cartoon,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4),
+                      topRight: Radius.circular(4)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 40),
+                    Text(widget.box.name ?? ''),
+                  ],
+                )
+            ),
+            Container(color: AppColors.midOrange, height: 10,),
+            Container(color: AppColors.cartoon, height: 3,),
+            Container(color: AppColors.midOrange, height: 10,),
+            Container(
+              height: 25,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               decoration: const BoxDecoration(
                 color: AppColors.cartoon,
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4)),
+                    bottomLeft: Radius.circular(4),
+                    bottomRight: Radius.circular(4)),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(box.name ?? ''),
-                  IconButton(
-                    onPressed: () {
-                      final size = MediaQuery.of(context).size;
-                      const menuWidth = 150.0;
-                      const menuHeight = 100.0;
-
-                      final center = Offset(size.width / 2, size.height / 3);
-
-                      final position = RelativeRect.fromSize(
-                        Rect.fromCenter(center: center, width: menuWidth, height: menuHeight),
-                        size,
-                      );
-
-                      showMenu(
-                        context: context,
-                        position: position,
-                        items: <PopupMenuItem>[
-                          const PopupMenuItem<int>(value: 1,
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit),
-                                SizedBox(width: 8),
-                                Text('Edit'),
-                              ],
-                            ),
-                          ),
-                          const PopupMenuItem<int>(value: 2,
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete),
-                                SizedBox(width: 8),
-                                Text('Delete'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ).then((value) {
-                        if (value != null) _showDialog(context, value);
-                      });
-                    },
-                    icon: const Icon(Icons.more_horiz),
-                  ),
-                ],
-              )
-          ),
-          Container(color: AppColors.midOrange, height: 10,),
-          Container(color: AppColors.cartoon, height: 3,),
-          Container(color: AppColors.midOrange, height: 10,),
-          Container(
-            height: 25,
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            decoration: const BoxDecoration(
-              color: AppColors.cartoon,
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(4),
-                  bottomRight: Radius.circular(4)),
             ),
-          ),
-          const SizedBox(height: 15),
-        ],
+            //const SizedBox(height: 15),
+          ],
+        ),
       ),
     );
   }
 
-  void _showDialog(BuildContext context, int option) {
-    showDialog(
+  void _showEditOptions(BuildContext context) {
+    showModalBottomSheet(
       context: context,
-      builder: (context) {
-        switch (option) {
-          case 1:
-            return UpdateBoxModal(box: box);
-          case 2:
-            return DeleteBoxModal(box: box);
-          default:
-            return Container();
-        }
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 150,
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.edit),
+                title: const Text('Edit'),
+                onTap: () {
+                  showDialog(context: context,
+                      builder: (context) => UpdateBoxModal(box: widget.box)
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete),
+                title: const Text('Delete'),
+                onTap: () {
+                  showDialog(context: context,
+                      builder: (context) => DeleteBoxModal(box: widget.box)
+                  );
+                },
+              ),
+            ],
+          ),
+        );
       },
     );
   }
-
 }

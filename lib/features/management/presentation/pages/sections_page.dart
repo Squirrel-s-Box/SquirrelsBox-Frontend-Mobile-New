@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common_widgets/atomic/atomic_texts.dart';
+import '../../../widgets/atomic/atomic_texts.dart';
 import '../../domain/models/section.dart';
 import '../blocs/section/section_bloc.dart';
 import '../widgets/section_widget.dart';

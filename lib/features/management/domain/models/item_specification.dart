@@ -68,5 +68,5 @@ class ItemSpecification extends Equatable  {
   }
 
   @override
-  List<Object?> get props => [id, itemId, name, value, type, creationDate];
+  List<Object?> get props => [id, itemId, name];
 }

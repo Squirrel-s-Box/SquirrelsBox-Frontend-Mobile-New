@@ -2,8 +2,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/common_widgets/common_widgets.dart';
+import '../../features/authentication/presentation/pages/sign_up_page.dart';
+import '../../features/widgets/app_widgets.dart';
 import '../../features/screens.dart';
+import '../../features/util/logger/app_logger.dart';
 
 
 final appRouter = GoRouter(
@@ -45,7 +47,7 @@ final appRouter = GoRouter(
                         sectionName: state.uri.queryParameters['sectionName']!,
                         boxName: state.uri.queryParameters['boxName']!,
                       ),
-                      routes: [
+                      /*routes: [
                         GoRoute(
                           name: 'item',
                           path: ':itemId',
@@ -56,7 +58,7 @@ final appRouter = GoRouter(
                             boxName: state.uri.queryParameters['boxName']!
                           ),
                         ),
-                      ],
+                      ],*/
                     ),
                   ],
                 ),
@@ -72,21 +74,38 @@ final appRouter = GoRouter(
               path: 'downloads',
               builder: (context, state) => const DownloadsPage(),
             ),
-            GoRoute(
-              name: 'camera',
-              path: 'camera',
-              builder: (context, state) => TakePictureScreen(
-                camera: state.extra as CameraDescription,
-              ),
-            ),
           ],
         ), // End Home
-        GoRoute(
-          name: 'authentication',
-          path: '/authentication',
-          builder: (context, state) => const AuthenticationPage(),
-        ),
       ]
+    ),
+    GoRoute(
+      name: 'authentication',
+      path: '/authentication',
+      builder: (context, state) => const AuthenticationPage(),
+      routes: [
+        GoRoute(
+          name: 'signUp',
+          path: 'sign-up',
+          builder: (context, state) => const SignUpPage(),
+        ),
+      ],
+    ),
+    GoRoute(
+      name: 'item',
+      path: '/:itemId/specifications',
+      builder: (context, state) => ItemSpecificationsPage(
+          itemId: state.pathParameters['itemId']!,
+          itemName: state.uri.queryParameters['itemName']!,
+          sectionName: state.uri.queryParameters['sectionName']!,
+          boxName: state.uri.queryParameters['boxName']!
+      ),
+    ),
+    GoRoute(
+      name: 'camera',
+      path: '/camera',
+      builder: (context, state) => TakePictureScreen(
+        camera: state.extra as CameraDescription,
+      ),
     ),
   ]
 );
@@ -96,6 +115,10 @@ class RouterCubit extends Cubit<GoRouter> {
   RouterCubit({required this.camera}):super(appRouter);
 
   void goBack() => state.pop();
+
+  void goBackValueString(String value) {
+    return state.pop(value);
+  }
 
   String getRouteName() {
     return state.routerDelegate.currentConfiguration.last.route.name.toString();
@@ -113,8 +136,15 @@ class RouterCubit extends Cubit<GoRouter> {
     state.goNamed('authentication');
   }
 
-  void goCamera() {
-    state.goNamed('camera', extra: camera);
+  Future<String?> goCamera() async {
+    try {
+      final String? value = await state.pushNamed('camera', extra: camera);
+      return value;
+
+    } catch (e) {
+      AppLogger.error('Error to obtain return value: $e');
+      return null;
+    }
   }
 
   void goFavorites() {
@@ -146,10 +176,10 @@ class RouterCubit extends Cubit<GoRouter> {
   }
 
   void goItemSpecifications(String itemId, String itemName) {
-    state.goNamed('item',
+    state.pushNamed('item',
         pathParameters: {
-          'boxId': state.routerDelegate.currentConfiguration.pathParameters['boxId']!,
-          'sectionId': state.routerDelegate.currentConfiguration.pathParameters['sectionId']!,
+          //'boxId': state.routerDelegate.currentConfiguration.pathParameters['boxId']!,
+          //'sectionId': state.routerDelegate.currentConfiguration.pathParameters['sectionId']!,
           'itemId': itemId,
         },
         queryParameters: {

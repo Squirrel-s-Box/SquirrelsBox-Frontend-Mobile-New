@@ -52,19 +52,3 @@ class DeleteItemSpec extends ItemSpecificationEvent {
   @override
   List<Object?> get props => [itemSpecIds];
 }
-
-class DeleteItemSpecLocal extends ItemSpecificationEvent {
-  final ItemSpecification spec;
-
-  const DeleteItemSpecLocal({required this.spec});
-
-  @override
-  List<Object?> get props => [spec];
-}
-
-class CancelEdit extends ItemSpecificationEvent {
-  const CancelEdit();
-
-  @override
-  List<Object?> get props => [];
-}

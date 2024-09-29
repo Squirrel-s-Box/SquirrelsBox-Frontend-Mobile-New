@@ -5,59 +5,48 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../config/router/app_router.dart';
 import '../../../../config/theme/colors.dart';
 import '../../../util/constants/numbers.dart';
+import '../../../util/logger/app_logger.dart';
 import '../../../widgets/molecules/buttons.dart';
-import '../../domain/models/user_login.dart';
-import '../blocs/authentication/authentication_bloc.dart';
+import '../blocs/sign_up/sign_up_bloc.dart';
 
-class AuthenticationPage extends StatefulWidget {
-  const AuthenticationPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<AuthenticationPage> createState() => _AuthenticationPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _AuthenticationPageState extends State<AuthenticationPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  late final RouterCubit _router;
-
   bool logging = false;
-  bool _isObscure = true;
-
-  @override
-  void initState() {
-    _router = context.read<RouterCubit>();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
+    return BlocListener<SignUpBloc, SignUpState>(
       listener: (context, state) {
         switch (state.status) {
-          case AuthenticationStatus.unknown:
+          case SignUpStatus.unknown:
             setState(() {
               logging = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(state.error?.response.toString() ?? 'An error occurred'),
-              backgroundColor: Colors.red,
-            ));
+            AppLogger.info('unknown');
             break;
-          case AuthenticationStatus.authenticated:
+          case SignUpStatus.authenticated:
             setState(() {
               logging = false;
             });
-            _router.goHome();
+            context.read<RouterCubit>().goHome();
             break;
-          case AuthenticationStatus.unauthenticated:
+          case SignUpStatus.unauthenticated:
             setState(() {
               logging = false;
             });
             break;
-          case AuthenticationStatus.loading:
+          case SignUpStatus.loading:
             setState(() {
               logging = true;
             });
@@ -66,8 +55,8 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
       },
       child: Scaffold(
         body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: loginForm()
+            padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: loginForm()
         ),
       ),
     );
@@ -116,23 +105,13 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 20),
             child: TextFormField(
-              obscureText: _isObscure,
+              obscureText: true,
               controller: passwordController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: 'Password',
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isObscure ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isObscure = !_isObscure;
-                    });
-                  },
-                ),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -142,24 +121,30 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               },
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Don't have an account?"),
-              TextButton(
-                onPressed: () => _router.goRouteName('signUp'),
-                child: const Text('Sign Up',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
+          Container(
+            padding: const EdgeInsets.only(top: 10),
+            child: TextFormField(
+              obscureText: true,
+              controller: confirmPasswordController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Confirm Password',
               ),
-            ],
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a password';
+                }
+                if (value != passwordController.text) {
+                  return 'Both password must be the same';
+                }
+                return null;
+              },
+            ),
           ),
           AppButton(
             logging: logging,
             onPressed: _handleClick,
-            text: 'Sign In',
+            text: 'Sign Up',
           ),
         ],
       ),
@@ -168,11 +153,11 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
   void _handleClick() {
     if (_formKey.currentState!.validate()) {
-      context.read<AuthenticationBloc>().add(
-          AuthenticationLoginRequested(user: UserLogin(
-              username: emailController.text,
-              password: passwordController.text
-          ))
+      context.read<SignUpBloc>().add(
+          SignUpRequested(
+            username: emailController.text,
+            password: passwordController.text
+          )
       );
     }
   }

@@ -50,7 +50,8 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
     emit(state.copyWith(status: ItemStatus.loading));
 
     await emit.forEach<BaseResponse>(
-        itemService.addItem(ItemRequest(
+        itemService.addItem(
+          ItemRequest(
             sectionId: event.sectionId,
             item: Item(
               name: event.name,
@@ -58,7 +59,9 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
               amount: event.amount,
               itemPhoto: event.photo,
             )
-        )).asStream(),
+          ),
+          event.photoPath
+        ).asStream(),
         onData: (items) => state.copyWith(
           status: ItemStatus.success,
         ),
@@ -88,10 +91,13 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
     emit(state.copyWith(status: ItemStatus.loading));
 
     await emit.forEach<BaseResponse>(
-        itemService.updateItem(ItemRequest(
-          item: event.item,
-          sectionId: state.sectionId
-        )).asStream(),
+        itemService.updateItem(
+          ItemRequest(
+            item: event.item,
+            sectionId: state.sectionId
+          ),
+          event.photoPath
+        ).asStream(),
         onData: (items) {
           state.items[state.items.indexWhere((e) => e.id == event.item.id)] = event.item;
           return state.copyWith(

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../util/domain/models/response/base_response.dart';
+import '../../../../util/logger/app_logger.dart';
 import '../../../domain/models/item_specification.dart';
 import '../../../domain/models/requests/item_specification_request.dart';
 import '../../../services/item_specification_service.dart';
@@ -20,8 +21,6 @@ class ItemSpecificationBloc extends Bloc<ItemSpecificationEvent, ItemSpecificati
     on<FetchItemSpecs>(_onFetchItemSpecs);
     on<UpdateItemSpec>(_onUpdateItemSpec);
     on<DeleteItemSpec>(_onDeleteItemSpec);
-    on<DeleteItemSpecLocal>(_onDeleteItemSpecLocal);
-    on<CancelEdit>(_onCancelEdit);
   }
 
   Future<void> _onFetchItemSpecs(
@@ -59,11 +58,21 @@ class ItemSpecificationBloc extends Bloc<ItemSpecificationEvent, ItemSpecificati
           status: ItemSpecificationStatus.success,
         ),
         onError: (e, __) {
-          final error = e as DioException;
-          return state.copyWith(
-            status: ItemSpecificationStatus.failure,
-            error: error,
-          );
+          if (e is DioException) {
+            return state.copyWith(
+              status: ItemSpecificationStatus.failure,
+              error: e,
+            );
+          } else {
+            AppLogger.error('Unexpected error: $e');
+            return state.copyWith(
+              status: ItemSpecificationStatus.failure,
+              error: DioException(
+                requestOptions: RequestOptions(path: '/PostMassiveAsync'),
+                error: 'Unexpected error occurred.',
+              ),
+            );
+          }
         }
     );
 
@@ -129,34 +138,6 @@ class ItemSpecificationBloc extends Bloc<ItemSpecificationEvent, ItemSpecificati
             status: ItemSpecificationStatus.failure
         )
     );
-  }
-
-  void _onDeleteItemSpecLocal(
-      DeleteItemSpecLocal event,
-      Emitter<ItemSpecificationState> emit
-      ) {
-    emit(state.copyWith(
-      specifications: state.specifications.where((s) => s != event.spec).toList(),
-      specsDeleted: [...state.specsDeleted, event.spec]
-    ));
-  }
-
-  void _onCancelEdit(
-      CancelEdit event,
-      Emitter<ItemSpecificationState> emit
-      ) {
-    emit(state.copyWith(
-        specifications: [...state.specifications, ...state.specsDeleted],
-        specsDeleted: []
-    ));
-
-    //TODO: is necessary to fetch?
-    /*add(FetchItemSpecs(
-        itemId: state.itemId,
-        itemName: state.itemName,
-        sectionName: state.sectionName,
-        boxName: state.boxName
-    ));*/
   }
 
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../domain/models/item.dart';
 import '../../blocs/item/item_bloc.dart';
@@ -20,7 +21,8 @@ class _UpdateItemModalState extends State<UpdateItemModal> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _photoController = TextEditingController();
+
+  String photoPath = '';
 
   late final ItemBloc itemBloc;
 
@@ -31,7 +33,6 @@ class _UpdateItemModalState extends State<UpdateItemModal> {
     _nameController.text = widget.item.name!;
     _descriptionController.text = widget.item.description!;
     _amountController.text = widget.item.amount!;
-    _photoController.text = widget.item.itemPhoto!;
 
     super.initState();
   }
@@ -41,7 +42,6 @@ class _UpdateItemModalState extends State<UpdateItemModal> {
     _nameController.dispose();
     _descriptionController.dispose();
     _amountController.dispose();
-    _photoController.dispose();
     super.dispose();
   }
 
@@ -113,10 +113,12 @@ class _UpdateItemModalState extends State<UpdateItemModal> {
                   return null;
                 },
               ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Picture'),
-                controller: _photoController,
-                enabled: false, //TODO: implement photo selector
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  photoPath = await _selectPhoto();
+                },
+                child: const Text('Select photo'),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
@@ -137,11 +139,17 @@ class _UpdateItemModalState extends State<UpdateItemModal> {
           name: _nameController.text,
           description: _descriptionController.text,
           amount: _amountController.text,
-          itemPhoto: _photoController.text,
-        )
+        ),
+        photoPath: photoPath,
       ));
       Navigator.of(context).pop();
     }
+  }
+
+  Future<String> _selectPhoto() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    return image?.path ?? '';
   }
 
 }

@@ -17,6 +17,8 @@ class AddItem extends ItemEvent {
   final String amount;
   final String photo;
 
+  final String photoPath;
+
   const AddItem({
     required this.boxName,
     required this.sectionName,
@@ -25,6 +27,7 @@ class AddItem extends ItemEvent {
     required this.description,
     required this.amount,
     required this.photo,
+    required this.photoPath,
   });
 
   @override
@@ -34,6 +37,7 @@ class AddItem extends ItemEvent {
     description,
     amount,
     photo,
+    photoPath,
   ];
 }
 
@@ -54,11 +58,12 @@ class FetchItems extends ItemEvent {
 
 class UpdateItem extends ItemEvent {
   final Item item;
+  final String photoPath;
 
-  const UpdateItem({required this.item});
+  const UpdateItem({required this.item, required this.photoPath});
 
   @override
-  List<Object?> get props => [item];
+  List<Object?> get props => [item, photoPath];
 }
 
 class DeleteItem extends ItemEvent {

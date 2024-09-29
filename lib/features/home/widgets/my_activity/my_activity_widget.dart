@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../config/helper/responsive.dart';
-import '../../../common_widgets/common_widgets.dart';
+import '../../../widgets/app_widgets.dart';
 import 'tile_activity_register.dart';
 
 part 'my_activity_register.dart';

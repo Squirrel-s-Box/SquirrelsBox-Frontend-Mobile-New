@@ -7,6 +7,8 @@ class FloatingActionBottomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appRouter = context.read<RouterCubit>();
+    final sessionBloc = context.read<AuthenticationBloc>();
+    final registerBloc = context.read<SignUpBloc>();
     final bool manage = routeName == 'boxes' || routeName == 'sections' || routeName == 'items';
 
     return FloatingActionButton.extended(
@@ -23,7 +25,7 @@ class FloatingActionBottomWidget extends StatelessWidget {
         switch(routeName) {
           case 'boxes':
             showDialog(context: context,
-              builder: (context) => const AddBoxModal(),
+              builder: (context) => AddBoxModal(sessionCode: sessionBloc.state.session.code ?? registerBloc.state.session.code!),
             );
             break;
           case 'sections':

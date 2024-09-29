@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/router/app_router.dart';
 import '../../../../config/theme/colors.dart';
+import '../../authentication/presentation/blocs/authentication/authentication_bloc.dart';
+import '../../authentication/presentation/blocs/sign_up/sign_up_bloc.dart';
 import '../../management/presentation/widgets/modals/modals.dart';
 import 'bottom_item.dart';
 import 'bottom_item_model.dart';
@@ -21,7 +23,7 @@ class SkeletonAppWidget extends StatelessWidget {
     final appRouter = context.read<RouterCubit>();
 
     return Scaffold(
-      appBar: appRouter.getRouteName() == 'item' || appRouter.getRouteName() == 'authentication'
+      appBar: appRouter.getRouteName() == 'item' || appRouter.getRouteName() == 'camera'
           ? null
           : AppBar(
             title: const Text("Squirrel's Box"),
@@ -29,14 +31,17 @@ class SkeletonAppWidget extends StatelessWidget {
           ),
       body: Container(
         margin: const EdgeInsets.only(bottom: 35),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         width: double.infinity,
         height: double.infinity,
         child: child,
       ),
-      floatingActionButtonLocation: appRouter.getRouteName() == 'authentication'? null : FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: appRouter.getRouteName() == 'authentication'? null : FloatingActionBottomWidget(routeName: appRouter.getRouteName()),
-      bottomNavigationBar: appRouter.getRouteName() == 'authentication'? null : BottomBar(),
+      floatingActionButtonLocation: appRouter.getRouteName() == 'camera'
+          ? null : FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: appRouter.getRouteName() == 'camera'
+          ? null : FloatingActionBottomWidget(routeName: appRouter.getRouteName()),
+      bottomNavigationBar: appRouter.getRouteName() == 'camera'
+          ? null : BottomBar(),
     );
   }
 

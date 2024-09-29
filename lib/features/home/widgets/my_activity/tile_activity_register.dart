@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../config/theme/colors.dart';
-import '../../../common_widgets/common_widgets.dart';
+import '../../../widgets/app_widgets.dart';
 
 class TileActivityRegister extends StatelessWidget {
   final DateTime date;

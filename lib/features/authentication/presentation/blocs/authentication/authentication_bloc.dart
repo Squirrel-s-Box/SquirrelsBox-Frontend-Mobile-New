@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain/models/session_info.dart';
@@ -31,10 +32,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           return state.copyWith(
             status: AuthenticationStatus.authenticated,
             session: info.copyWith(code: Security().aesDecryption(info.code!)),
+            //session: info,
           );
         },
         onError: (e, __) {
-          return state.copyWith(status: AuthenticationStatus.unknown);
+          final error = e as DioException;
+          return state.copyWith(
+            status: AuthenticationStatus.unknown,
+            error: error,
+          );
         }
     );
   }

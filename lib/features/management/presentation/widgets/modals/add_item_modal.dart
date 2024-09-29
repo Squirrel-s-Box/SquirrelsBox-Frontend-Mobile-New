@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../blocs/item/item_bloc.dart';
 
@@ -17,7 +18,8 @@ class _AddItemModalState extends State<AddItemModal> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _photoController = TextEditingController();
+
+  String photoPath = '';
 
   late final ItemBloc itemBloc;
 
@@ -32,7 +34,6 @@ class _AddItemModalState extends State<AddItemModal> {
     _nameController.dispose();
     _descriptionController.dispose();
     _amountController.dispose();
-    _photoController.dispose();
     super.dispose();
   }
 
@@ -105,10 +106,12 @@ class _AddItemModalState extends State<AddItemModal> {
                   return null;
                 },
               ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Picture'),
-                controller: _photoController,
-                enabled: false, //TODO: implement photo selector
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  photoPath = await _selectPhoto();
+                },
+                child: const Text('Select photo'),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
@@ -132,9 +135,16 @@ class _AddItemModalState extends State<AddItemModal> {
         description: _descriptionController.text,
         amount: _amountController.text,
         photo: '',
+        photoPath: photoPath,
       ));
       Navigator.of(context).pop();
     }
+  }
+
+  Future<String> _selectPhoto() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    return image?.path ?? '';
   }
 
 

@@ -43,7 +43,9 @@ class _ItemWidgetState extends State<ItemWidget> {
           Card(
             elevation: 0,
             child: ListTile(
-              leading: const FlutterLogo(size: 56.0),
+              leading: widget.item.itemPhoto!.isEmpty
+                ? const FlutterLogo(size: 56.0)
+                : Image.network(widget.item.itemPhoto!),
               title: Text(widget.item.name ?? ''),
               subtitle: Text(widget.item.description ?? ''),
               trailing: Column(

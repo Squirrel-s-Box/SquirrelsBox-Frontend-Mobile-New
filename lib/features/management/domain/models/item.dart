@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-class Item extends Equatable  {
+import 'item_specification.dart';
+
+class Item extends Equatable {
   final int? id;
   final String? name;
   final String? description;
@@ -10,6 +12,7 @@ class Item extends Equatable  {
   final String? itemPhoto;
   final String? creationDate;
   final String? lastUpdateDate;
+  final List<ItemSpecification>? specificationList;
 
   const Item({
     this.id,
@@ -19,6 +22,7 @@ class Item extends Equatable  {
     this.itemPhoto,
     this.creationDate,
     this.lastUpdateDate,
+    this.specificationList,
   });
 
   factory Item.fromJson(String str) => Item.fromMap(json.decode(str));
@@ -55,6 +59,7 @@ class Item extends Equatable  {
     String? itemPhoto,
     String? creationDate,
     String? lastUpdateDate,
+    List<ItemSpecification>? specificationList,
   }) {
     return Item(
       id: id ?? this.id,
@@ -64,6 +69,7 @@ class Item extends Equatable  {
       itemPhoto: itemPhoto ?? this.itemPhoto,
       creationDate: creationDate ?? this.creationDate,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
+      specificationList: specificationList ?? this.specificationList,
     );
   }
 

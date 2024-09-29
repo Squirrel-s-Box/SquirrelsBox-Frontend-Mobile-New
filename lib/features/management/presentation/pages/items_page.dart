@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common_widgets/common_widgets.dart';
+import '../../../widgets/app_widgets.dart';
 import '../../domain/models/item.dart';
 import '../blocs/item/item_bloc.dart';
 import '../widgets/item_widget.dart';
@@ -47,8 +47,23 @@ class _ItemsPageState extends State<ItemsPage> {
               child: CircularProgressIndicator(),
             );
           case ItemStatus.failure:
-            return const Center(
-              child: Text("An error occurred"),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("An error occurred"),
+                  IconButton(
+                    onPressed: () {
+                      context.read<ItemBloc>().add(FetchItems(
+                        sectionId: sectionId,
+                        sectionName: widget.sectionName,
+                        boxName: widget.boxName
+                      ));
+                    },
+                    icon: const Icon(Icons.refresh_rounded)
+                  )
+                ],
+              ),
             );
           case ItemStatus.success:
             return Column(
