@@ -142,7 +142,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               },
             ),
           ),
-          Row(
+          /*Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text("Don't have an account?"),
@@ -155,7 +155,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 ),
               ),
             ],
-          ),
+          ),*/
           AppButton(
             logging: logging,
             onPressed: _handleClick,

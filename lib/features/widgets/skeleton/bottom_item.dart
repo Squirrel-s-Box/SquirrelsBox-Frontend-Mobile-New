@@ -30,7 +30,7 @@ class BottomItem extends StatelessWidget {
               child: Icon(item.icon,
                   color: currentScreen == item.path
                       ? AppColors.darkBlue
-                      : AppColors.midOrange
+                      : AppColors.whiteBrown
               ),
             ),
             Transform.translate(
@@ -43,7 +43,7 @@ class BottomItem extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: currentScreen == item.path
                       ? AppColors.darkBlue
-                      : AppColors.midOrange,
+                      : AppColors.whiteBrown,
                 ),
               ),
             ),

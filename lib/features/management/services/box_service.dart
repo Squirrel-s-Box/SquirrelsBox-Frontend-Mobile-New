@@ -6,7 +6,6 @@ import '../../util/domain/models/response/base_response.dart';
 import '../../util/logger/app_logger.dart';
 import '../domain/models/box.dart';
 import '../domain/models/responses/box_list_response.dart';
-import 'interceptors/box_interceptor.dart';
 
 class BoxService {
   final ManagementApiService _dio;

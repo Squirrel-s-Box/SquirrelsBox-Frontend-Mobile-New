@@ -250,10 +250,10 @@ class AuthenticationApiService {
     }
   }
 
-  Future<dynamic> deleteRequest(String path) async {
+  Future<dynamic> deleteRequest(String path, { dynamic data }) async {
     try {
       _dio.options.headers['content-type'] = 'application/json';
-      Response response = await _dio.delete(path);
+      Response response = await _dio.delete(path, data: data);
       return response.data;
 
     } on DioException catch (e) {

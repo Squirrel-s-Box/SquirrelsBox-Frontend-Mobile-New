@@ -185,11 +185,7 @@ class ManagementApiService {
     } on DioException catch (e) {
       AppLogger.error('DioException: ${e.message}');
       if (e.response != null) {
-        AppLogger.error(
-            'Title: ${e.response?.data['title']} \n'
-                'Status: ${e.response?.data['status']} \n'
-                'Errors: ${e.response?.data['errors']}'
-        );
+        AppLogger.error(e.response!.data);
       }
       throw DioException(error: 'Failed to post data', requestOptions: e.requestOptions);
     }

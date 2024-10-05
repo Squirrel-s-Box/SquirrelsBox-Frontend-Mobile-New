@@ -6,20 +6,18 @@ import '../../util/logger/app_logger.dart';
 import '../domain/models/item.dart';
 import '../domain/models/requests/item_request.dart';
 import '../domain/models/responses/item_list_response.dart';
-import 'interceptors/item_interceptor.dart';
+import 'management_api_service.dart';
 
 class ItemService {
-  final Dio _dio;
+  final ManagementApiService _dio;
   final String api = '$baseUrlWebService/Item';
 
-  ItemService() : _dio = Dio()..interceptors.add(ItemInterceptor());
+  ItemService() : _dio = ManagementApiService();
 
   Future<BaseResponse> addItem(ItemRequest item, String filePath) async {
     final url = api;
 
     try {
-      _dio.options.headers['content-type'] = 'multipart/form-data';
-
       final imagePart = filePath.isEmpty ? null : await MultipartFile.fromFile(filePath);
 
       FormData formData = FormData.fromMap({
@@ -32,10 +30,10 @@ class ItemService {
       });
 
       AppLogger.info(formData);
-      final resp = await _dio.post(url, data: formData);
+      final resp = await _dio.postRequestFormData(url, formData);
       AppLogger.info(resp);
 
-      final data = BaseResponse.fromMap(resp.data);
+      final data = BaseResponse.fromMap(resp);
       return data;
 
     } on DioException catch (e) {
@@ -52,12 +50,10 @@ class ItemService {
     final url = '$api/sectionlist/$sectionId';
 
     try {
-      _dio.options.headers['content-type'] = 'application/json';
-
-      final resp = await _dio.get(url);
+      final resp = await _dio.getRequest(url);
       AppLogger.info(resp);
 
-      final data = ItemListResponse.fromMap(resp.data);
+      final data = ItemListResponse.fromMap(resp);
       return data.itemList!;
 
     } on DioException catch (e) {
@@ -75,8 +71,6 @@ class ItemService {
     final url = '$api/${item.item.id}';
 
     try {
-      _dio.options.headers['content-type'] = 'multipart/form-data';
-
       final imagePart = filePath.isEmpty ? null : await MultipartFile.fromFile(filePath);
 
       FormData formData = FormData.fromMap({
@@ -89,11 +83,10 @@ class ItemService {
       });
 
       AppLogger.info(formData);
-      final resp = await _dio.put(url, data: formData);
+      final resp = await _dio.putRequestFormData(url, formData);
       AppLogger.info(resp);
 
-      _dio.options.headers['content-type'] = 'application/json';
-      final data = BaseResponse.fromMap(resp.data);
+      final data = BaseResponse.fromMap(resp);
       return data;
 
     } on DioException catch (e) {
@@ -117,7 +110,7 @@ class ItemService {
     final url = '$api/$itemId';
 
     try {
-      final resp = await _dio.delete(url);
+      final resp = await _dio.deleteRequest(url);
       AppLogger.info(resp);
 
       final data = BaseResponse.fromMap(resp.data);
