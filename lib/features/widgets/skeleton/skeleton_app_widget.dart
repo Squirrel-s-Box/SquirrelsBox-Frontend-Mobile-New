@@ -27,7 +27,7 @@ class SkeletonAppWidget extends StatelessWidget {
           ? null
           : AppBar(
             title: const Text("Squirrel's Box"),
-            actions: actionsWidgets(appRouter.getRouteName()),
+            actions: actionsWidgets(appRouter.getRouteName(), appRouter),
           ),
       body: Container(
         margin: const EdgeInsets.only(bottom: 35),
@@ -45,7 +45,7 @@ class SkeletonAppWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> actionsWidgets(String currentScreen) {
+  List<Widget> actionsWidgets(String currentScreen, RouterCubit appRouter) {
     Map<String, List<Map<IconData, Function>>> screenActions = {
       'home': [
         {Icons.extension_rounded: () => print('Extension action')},
@@ -68,6 +68,10 @@ class SkeletonAppWidget extends StatelessWidget {
         {Icons.search: () => print('Search action')},
         {Icons.filter_alt_rounded: () => print('Filter action')},
       ],
+      'profile':[
+        {Icons.notifications : ()=> print("xd")},
+        {Icons.settings : ()=> appRouter.goSettings()},
+      ]
     };
 
     return screenActions[currentScreen]?.map((actionMap) {

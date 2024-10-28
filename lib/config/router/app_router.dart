@@ -1,17 +1,16 @@
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:squirrels_box_2/features/settings/presentation/pages/settings_page.dart';
 
 import '../../features/authentication/presentation/pages/sign_up_page.dart';
 import '../../features/widgets/app_widgets.dart';
 import '../../features/screens.dart';
 import '../../features/util/logger/app_logger.dart';
 
-
-final appRouter = GoRouter(
-  initialLocation: '/authentication',
-  routes: <RouteBase>[
-    ShellRoute(
+final appRouter =
+    GoRouter(initialLocation: '/authentication', routes: <RouteBase>[
+  ShellRoute(
       builder: (context, state, child) {
         return SkeletonAppWidget(child: child);
       },
@@ -70,49 +69,52 @@ final appRouter = GoRouter(
               builder: (context, state) => const ProfilePage(),
             ),
             GoRoute(
+              name: 'settings',
+              path: 'settings',
+              builder: (context, state) => const SettingsPage(),
+            ),
+            GoRoute(
               name: 'downloads',
               path: 'downloads',
               builder: (context, state) => const DownloadsPage(),
             ),
           ],
         ), // End Home
-      ]
-    ),
-    GoRoute(
-      name: 'authentication',
-      path: '/authentication',
-      builder: (context, state) => const AuthenticationPage(),
-      routes: [
-        GoRoute(
-          name: 'signUp',
-          path: 'sign-up',
-          builder: (context, state) => const SignUpPage(),
-        ),
-      ],
-    ),
-    GoRoute(
-      name: 'item',
-      path: '/:itemId/specifications',
-      builder: (context, state) => ItemSpecificationsPage(
-          itemId: state.pathParameters['itemId']!,
-          itemName: state.uri.queryParameters['itemName']!,
-          sectionName: state.uri.queryParameters['sectionName']!,
-          boxName: state.uri.queryParameters['boxName']!
+      ]),
+  GoRoute(
+    name: 'authentication',
+    path: '/authentication',
+    builder: (context, state) => const AuthenticationPage(),
+    routes: [
+      GoRoute(
+        name: 'signUp',
+        path: 'sign-up',
+        builder: (context, state) => const SignUpPage(),
       ),
+    ],
+  ),
+  GoRoute(
+    name: 'item',
+    path: '/:itemId/specifications',
+    builder: (context, state) => ItemSpecificationsPage(
+        itemId: state.pathParameters['itemId']!,
+        itemName: state.uri.queryParameters['itemName']!,
+        sectionName: state.uri.queryParameters['sectionName']!,
+        boxName: state.uri.queryParameters['boxName']!),
+  ),
+  GoRoute(
+    name: 'camera',
+    path: '/camera',
+    builder: (context, state) => TakePictureScreen(
+      camera: state.extra as CameraDescription,
     ),
-    GoRoute(
-      name: 'camera',
-      path: '/camera',
-      builder: (context, state) => TakePictureScreen(
-        camera: state.extra as CameraDescription,
-      ),
-    ),
-  ]
-);
+  ),
+]);
 
 class RouterCubit extends Cubit<GoRouter> {
   final CameraDescription camera;
-  RouterCubit({required this.camera}):super(appRouter);
+
+  RouterCubit({required this.camera}) : super(appRouter);
 
   void goBack() => state.pop();
 
@@ -136,11 +138,14 @@ class RouterCubit extends Cubit<GoRouter> {
     state.goNamed('authentication');
   }
 
+  void goSettings(){
+    state.goNamed('settings');
+  }
+
   Future<String?> goCamera() async {
     try {
       final String? value = await state.pushNamed('camera', extra: camera);
       return value;
-
     } catch (e) {
       AppLogger.error('Error to obtain return value: $e');
       return null;
@@ -157,37 +162,33 @@ class RouterCubit extends Cubit<GoRouter> {
 
   void goSections(String boxId, String boxName) {
     state.goNamed('sections',
-      pathParameters: {'boxId': boxId},
-      queryParameters: {'boxName': boxName}
-    );
+        pathParameters: {'boxId': boxId},
+        queryParameters: {'boxName': boxName});
   }
 
   void goItems(String sectionId, String sectionName) {
-    state.goNamed('items',
-      pathParameters: {
-        'boxId': state.routerDelegate.currentConfiguration.pathParameters['boxId']!,
-        'sectionId': sectionId
-      },
-      queryParameters: {
-        'boxName': state.routerDelegate.currentConfiguration.uri.queryParameters['boxName']!,
-        'sectionName': sectionName
-      }
-    );
+    state.goNamed('items', pathParameters: {
+      'boxId':
+          state.routerDelegate.currentConfiguration.pathParameters['boxId']!,
+      'sectionId': sectionId
+    }, queryParameters: {
+      'boxName': state
+          .routerDelegate.currentConfiguration.uri.queryParameters['boxName']!,
+      'sectionName': sectionName
+    });
   }
 
   void goItemSpecifications(String itemId, String itemName) {
-    state.pushNamed('item',
-        pathParameters: {
-          //'boxId': state.routerDelegate.currentConfiguration.pathParameters['boxId']!,
-          //'sectionId': state.routerDelegate.currentConfiguration.pathParameters['sectionId']!,
-          'itemId': itemId,
-        },
-        queryParameters: {
-          'boxName': state.routerDelegate.currentConfiguration.uri.queryParameters['boxName']!,
-          'sectionName': state.routerDelegate.currentConfiguration.uri.queryParameters['sectionName']!,
-          'itemName': itemName,
-        }
-    );
+    state.pushNamed('item', pathParameters: {
+      //'boxId': state.routerDelegate.currentConfiguration.pathParameters['boxId']!,
+      //'sectionId': state.routerDelegate.currentConfiguration.pathParameters['sectionId']!,
+      'itemId': itemId,
+    }, queryParameters: {
+      'boxName': state
+          .routerDelegate.currentConfiguration.uri.queryParameters['boxName']!,
+      'sectionName': state.routerDelegate.currentConfiguration.uri
+          .queryParameters['sectionName']!,
+      'itemName': itemName,
+    });
   }
-
 }
