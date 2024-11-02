@@ -17,13 +17,21 @@ class Box extends Equatable{
   factory Box.fromMap(Map<String, dynamic> map) {
     Map<String, dynamic> boxMap = map['box'];
     return Box(
-    id: boxMap['id'],
-    name: boxMap['name'],
-    creationDate: boxMap['creationDate'],
-    lastUpdateDate: boxMap['lastUpdateDate'],
-    favorite: boxMap['favorite'],
+      id: boxMap['id'],
+      name: boxMap['name'],
+      creationDate: boxMap['creationDate'],
+      lastUpdateDate: boxMap['lastUpdateDate'],
+      favorite: boxMap['favorite'],
     );
   }
+
+  factory Box.fromMapLocal(Map<String, dynamic> map) => Box(
+    id: map['id'],
+    name: map['name'],
+    creationDate: map['creationDate'],
+    lastUpdateDate: map['lastUpdateDate'],
+    favorite: map['favorite'],
+  );
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

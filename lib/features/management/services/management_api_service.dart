@@ -33,7 +33,7 @@ class ManagementApiService {
         onError: (DioException e, handler) async {
           if (e.response?.statusCode == 401) {
             String? userCode = await getPreference('userCode');
-            String? newAccessToken = await refreshToken(userCode!, e.requestOptions.headers["Authorization"]);
+            String? newAccessToken = await refreshToken(userCode ?? '', e.requestOptions.headers["Authorization"]);
 
             if (newAccessToken != null) {
               e.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
@@ -79,15 +79,9 @@ class ManagementApiService {
       Response response = await _dio.post(urlRefreshToken, data: {"refreshToken":token, "code":userCode});
       RefreshTokenResponse refreshTokenResponse = RefreshTokenResponse.fromMap(response.data);
 
-      await setPreference('token', refreshTokenResponse.token!);
+      await setPreference('token', refreshTokenResponse.token);
       return refreshTokenResponse.token;
-      /*if (refreshRequest.validation!) {
-        await setPreference('token', refreshTokenResponse.token!);
-        return refreshTokenResponse.token;
-      } else {
-        return null;
-      }
-      return null;*/
+
     } on DioException {
       return null;
     }
@@ -166,11 +160,7 @@ class ManagementApiService {
     } on DioException catch (e) {
       AppLogger.error('DioException: ${e.message}');
       if (e.response != null) {
-        AppLogger.error(
-            'Title: ${e.response?.data['title']} \n'
-                'Status: ${e.response?.data['status']} \n'
-                'Errors: ${e.response?.data['errors']}'
-        );
+        AppLogger.error(e.response!.data);
       }
       throw DioException(error: 'Failed to get data', requestOptions: e.requestOptions);
     }
@@ -200,11 +190,7 @@ class ManagementApiService {
     } on DioException catch (e) {
       AppLogger.error('DioException: ${e.message}');
       if (e.response != null) {
-        AppLogger.error(
-            'Title: ${e.response?.data['title']} \n'
-                'Status: ${e.response?.data['status']} \n'
-                'Errors: ${e.response?.data['errors']}'
-        );
+        AppLogger.error(e.response!.data);
       }
       throw DioException(error: 'Failed to post data', requestOptions: e.requestOptions);
     }
@@ -219,11 +205,7 @@ class ManagementApiService {
     } on DioException catch (e) {
       AppLogger.error('DioException: ${e.message}');
       if (e.response != null) {
-        AppLogger.error(
-            'Title: ${e.response?.data['title']} \n'
-                'Status: ${e.response?.data['status']} \n'
-                'Errors: ${e.response?.data['errors']}'
-        );
+        AppLogger.error(e.response!.data);
       }
       throw DioException(error: 'Failed to put data', requestOptions: e.requestOptions);
     }
@@ -238,11 +220,7 @@ class ManagementApiService {
     } on DioException catch (e) {
       AppLogger.error('DioException: ${e.message}');
       if (e.response != null) {
-        AppLogger.error(
-            'Title: ${e.response?.data['title']} \n'
-                'Status: ${e.response?.data['status']} \n'
-                'Errors: ${e.response?.data['errors']}'
-        );
+        AppLogger.error(e.response!.data);
       }
       throw DioException(error: 'Failed to put data', requestOptions: e.requestOptions);
     }
@@ -257,11 +235,7 @@ class ManagementApiService {
     } on DioException catch (e) {
       AppLogger.error('DioException: ${e.message}');
       if (e.response != null) {
-        AppLogger.error(
-            'Title: ${e.response?.data['title']} \n'
-                'Status: ${e.response?.data['status']} \n'
-                'Errors: ${e.response?.data['errors']}'
-        );
+        AppLogger.error(e.response!.data);
       }
       throw DioException(error: 'Failed to delete data', requestOptions: e.requestOptions);
     }

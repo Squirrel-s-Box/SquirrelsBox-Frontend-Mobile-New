@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 
+import '../../util/constants/strings.dart';
 import '../../util/logger/app_logger.dart';
+import '../../util/preferences/app_shared_preferences.dart';
+import '../domain/models/responses/refresh_token_response.dart';
 
 class AuthenticationApiService {
   final Dio _dio = Dio();
@@ -18,8 +21,8 @@ class AuthenticationApiService {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           if (_requiresToken(options.path)) {
-            //String? token = await SecureStorageService.readSecureData('token');
-            //if (token != null) { options.headers['Authorization'] = 'Bearer $token';}
+            String? token = await getPreference('token');
+            if (token != null) { options.headers['Authorization'] = 'Bearer $token';}
           }
           //options.headers[ocpHeader] = ocp; // something like: ocp-subscription-key
           return handler.next(options); /// Continue with original request
@@ -29,7 +32,8 @@ class AuthenticationApiService {
         },
         onError: (DioException e, handler) async {
           if (e.response?.statusCode == 401) {
-            String? newAccessToken = await refreshToken(e.requestOptions.headers["Authorization"]);
+            String? userCode = await getPreference('userCode');
+            String? newAccessToken = await refreshToken(userCode ?? '', e.requestOptions.headers["Authorization"]);
 
             if (newAccessToken != null) {
               e.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
@@ -70,17 +74,14 @@ class AuthenticationApiService {
     return !_endpointsWithToken.any((endpoint) => path.contains(endpoint));
   }
 
-  Future<String?> refreshToken(String token) async {
+  Future<String?> refreshToken(String userCode, String token) async {
     try {
-      /*Response response = await _dio.post(URL_REFRESH_TOKEN, data: {"token":token});
-      TokenRefreshRequest refreshRequest = TokenRefreshRequest.fromJson(response.data);
-      if (refreshRequest.validation!) {
-        await SecureStorageService.writeSecureData('token', refreshRequest.token!);
-        return refreshRequest.token!;
-      } else {
-        return null;
-      }*/
-      return null;
+      Response response = await _dio.post(urlRefreshToken, data: {"refreshToken":token, "code":userCode});
+      RefreshTokenResponse refreshTokenResponse = RefreshTokenResponse.fromMap(response.data);
+
+      await setPreference('token', refreshTokenResponse.token);
+      return refreshTokenResponse.token;
+
     } on DioException {
       return null;
     }
@@ -90,7 +91,7 @@ class AuthenticationApiService {
   bool _shouldRetry(DioException e) {
     return e.type == DioExceptionType.connectionTimeout
         || e.type == DioExceptionType.sendTimeout
-        || e.type == DioExceptionType.receiveTimeout ;
+        || e.type == DioExceptionType.receiveTimeout;
   }
 
   Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {

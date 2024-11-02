@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/router/app_router.dart';
 import '../../../../config/theme/colors.dart';
+import '../../../util/preferences/app_shared_preferences.dart';
 import '../../domain/models/box.dart';
 import 'modals/modals.dart';
 
@@ -31,9 +32,11 @@ class _BoxWidgetState extends State<BoxWidget> {
         );
         return false;
       },
-      //background: Container(color: Colors.grey),
       child: GestureDetector(
-        onTap: () => appRouter.goSections(widget.box.id.toString(), widget.box.name!),
+        onTap: () => {
+          addLastBoxUsed(widget.box),
+          appRouter.goSections(widget.box.id.toString(), widget.box.name!)
+        },
         onLongPress: () {
           _showEditOptions(context);
         },

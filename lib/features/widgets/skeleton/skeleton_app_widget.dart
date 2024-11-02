@@ -27,7 +27,7 @@ class SkeletonAppWidget extends StatelessWidget {
           ? null
           : AppBar(
             title: const Text("Squirrel's Box"),
-            actions: actionsWidgets(appRouter.getRouteName(), appRouter),
+            actions: actionsWidgets(appRouter),
           ),
       body: Container(
         margin: const EdgeInsets.only(bottom: 35),
@@ -45,28 +45,28 @@ class SkeletonAppWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> actionsWidgets(String currentScreen, RouterCubit appRouter) {
+  List<Widget> actionsWidgets(RouterCubit appRouter) {
     Map<String, List<Map<IconData, Function>>> screenActions = {
       'home': [
-        {Icons.extension_rounded: () => print('Extension action')},
-        {Icons.camera_alt_rounded: () => print('Camera action')},
-        {Icons.search: () => print('Search action')},
-        {Icons.notifications: () => print('Notifications action')},
+        {Icons.extension_rounded: () => appRouter.goComingSoon()},
+        {Icons.camera_alt_rounded: () => appRouter.goComingSoon()},
+        {Icons.search: () => appRouter.goComingSoon()},
+        {Icons.notifications: () => appRouter.goComingSoon()},
       ],
       'boxes': [
-        {Icons.star_border_rounded: () => print('Favourite action')},
-        {Icons.search: () => print('Search action')},
-        {Icons.filter_alt_rounded: () => print('Filter action')},
+        {Icons.star_border_rounded: () => appRouter.goComingSoon()},
+        {Icons.search: () => appRouter.goComingSoon()},
+        {Icons.filter_alt_rounded: () => appRouter.goComingSoon()}, //TODO: add filter method
       ],
       'sections': [
-        {Icons.star_border_rounded: () => print('Favourite action')},
-        {Icons.search: () => print('Search action')},
-        {Icons.filter_alt_rounded: () => print('Filter action')},
+        {Icons.star_border_rounded: () => appRouter.goComingSoon()},
+        {Icons.search: () => appRouter.goComingSoon()},
+        {Icons.filter_alt_rounded: () => appRouter.goComingSoon()}, //TODO: add filter method
       ],
       'items': [
-        {Icons.camera_alt_rounded: () => print('Camera action')},
-        {Icons.search: () => print('Search action')},
-        {Icons.filter_alt_rounded: () => print('Filter action')},
+        {Icons.camera_alt_rounded: () => appRouter.goComingSoon()},
+        {Icons.search: () => appRouter.goComingSoon()},
+        {Icons.filter_alt_rounded: () => appRouter.goComingSoon()}, //TODO: add filter method
       ],
       'profile':[
         {Icons.notifications : ()=> print("xd")},
@@ -74,7 +74,7 @@ class SkeletonAppWidget extends StatelessWidget {
       ]
     };
 
-    return screenActions[currentScreen]?.map((actionMap) {
+    return screenActions[appRouter.getRouteName()]?.map((actionMap) {
       IconData icon = actionMap.keys.first;
       Function? action = actionMap[icon];
       return IconButton(

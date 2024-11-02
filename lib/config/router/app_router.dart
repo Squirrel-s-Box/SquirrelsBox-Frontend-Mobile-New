@@ -3,113 +3,119 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:squirrels_box_2/features/settings/presentation/pages/settings_page.dart';
 
-import '../../features/authentication/presentation/pages/sign_up_page.dart';
 import '../../features/widgets/app_widgets.dart';
 import '../../features/screens.dart';
 import '../../features/util/logger/app_logger.dart';
 
-final appRouter =
-    GoRouter(initialLocation: '/authentication', routes: <RouteBase>[
-  ShellRoute(
-      builder: (context, state, child) {
-        return SkeletonAppWidget(child: child);
-      },
-      routes: <RouteBase>[
-        GoRoute(
-          name: 'home',
-          path: '/',
-          builder: (context, state) => const HomePage(),
-          routes: [
-            GoRoute(
-              name: 'favorites',
-              path: 'favorites',
-              builder: (context, state) => const FavoritesPage(),
-            ),
-            GoRoute(
-              name: 'boxes',
-              path: 'boxes',
-              builder: (context, state) => const BoxesPage(),
-              routes: [
-                GoRoute(
-                  name: 'sections',
-                  path: ':boxId/sections',
-                  builder: (context, state) => SectionsPage(
-                    boxId: state.pathParameters['boxId']!,
-                    boxName: state.uri.queryParameters['boxName']!,
-                  ),
-                  routes: [
-                    GoRoute(
-                      name: 'items',
-                      path: ':sectionId/items',
-                      builder: (context, state) => ItemsPage(
-                        sectionId: state.pathParameters['sectionId']!,
-                        sectionName: state.uri.queryParameters['sectionName']!,
-                        boxName: state.uri.queryParameters['boxName']!,
-                      ),
-                      /*routes: [
-                        GoRoute(
-                          name: 'item',
-                          path: ':itemId',
-                          builder: (context, state) => ItemSpecificationsPage(
-                            itemId: state.pathParameters['itemId']!,
-                            itemName: state.uri.queryParameters['itemName']!,
-                            sectionName: state.uri.queryParameters['sectionName']!,
-                            boxName: state.uri.queryParameters['boxName']!
-                          ),
-                        ),
-                      ],*/
+final appRouter = GoRouter(
+    initialLocation: '/authentication', routes: <RouteBase>[
+      ShellRoute(
+        builder: (context, state, child) {
+          return SkeletonAppWidget(child: child);
+        },
+        routes: <RouteBase>[
+          GoRoute(
+            name: 'home',
+            path: '/',
+            builder: (context, state) => HomePage(),
+            routes: [
+              GoRoute(
+                name: 'favorites',
+                path: 'favorites',
+                builder: (context, state) => const FavoritesPage(),
+              ),
+              GoRoute(
+                name: 'boxes',
+                path: 'boxes',
+                builder: (context, state) => const BoxesPage(),
+                routes: [
+                  GoRoute(
+                    name: 'sections',
+                    path: ':boxId/sections',
+                    builder: (context, state) => SectionsPage(
+                      boxId: state.pathParameters['boxId']!,
+                      boxName: state.uri.queryParameters['boxName']!,
                     ),
-                  ],
-                ),
-              ],
-            ), // End Boxes
-            GoRoute(
-              name: 'profile',
-              path: 'profile',
-              builder: (context, state) => const ProfilePage(),
-            ),
-            GoRoute(
-              name: 'settings',
-              path: 'settings',
-              builder: (context, state) => const SettingsPage(),
-            ),
-            GoRoute(
-              name: 'downloads',
-              path: 'downloads',
-              builder: (context, state) => const DownloadsPage(),
-            ),
-          ],
-        ), // End Home
-      ]),
-  GoRoute(
-    name: 'authentication',
-    path: '/authentication',
-    builder: (context, state) => const AuthenticationPage(),
-    routes: [
-      GoRoute(
-        name: 'signUp',
-        path: 'sign-up',
-        builder: (context, state) => const SignUpPage(),
+                    routes: [
+                      GoRoute(
+                        name: 'items',
+                        path: ':sectionId/items',
+                        builder: (context, state) => ItemsPage(
+                          sectionId: state.pathParameters['sectionId']!,
+                          sectionName: state.uri.queryParameters['sectionName']!,
+                          boxName: state.uri.queryParameters['boxName']!,
+                        ),
+                        /*routes: [
+                          GoRoute(
+                            name: 'item',
+                            path: ':itemId',
+                            builder: (context, state) => ItemSpecificationsPage(
+                              itemId: state.pathParameters['itemId']!,
+                              itemName: state.uri.queryParameters['itemName']!,
+                              sectionName: state.uri.queryParameters['sectionName']!,
+                              boxName: state.uri.queryParameters['boxName']!
+                            ),
+                          ),
+                        ],*/
+                      ),
+                    ],
+                  ),
+                ],
+              ), // End Boxes
+              GoRoute(
+                name: 'profile',
+                path: 'profile',
+                builder: (context, state) => const ProfilePage(),
+              ),
+              GoRoute(
+                name: 'settings',
+                path: 'settings',
+                builder: (context, state) => const SettingsPage(),
+              ),
+              GoRoute(
+                name: 'downloads',
+                path: 'downloads',
+                builder: (context, state) => const DownloadsPage(),
+              ),
+              GoRoute(
+                name: 'comingSoon',
+                path: 'coming-soon',
+                builder: (context, state) => const ComingSoonPage(),
+              ),
+            ],
+          ), // End Home
+        ]
       ),
-    ],
-  ),
-  GoRoute(
-    name: 'item',
-    path: '/:itemId/specifications',
-    builder: (context, state) => ItemSpecificationsPage(
-        itemId: state.pathParameters['itemId']!,
-        itemName: state.uri.queryParameters['itemName']!,
-        sectionName: state.uri.queryParameters['sectionName']!,
-        boxName: state.uri.queryParameters['boxName']!),
-  ),
-  GoRoute(
-    name: 'camera',
-    path: '/camera',
-    builder: (context, state) => TakePictureScreen(
-      camera: state.extra as CameraDescription,
-    ),
-  ),
-]);
+      GoRoute(
+        name: 'authentication',
+        path: '/authentication',
+        builder: (context, state) => const AuthenticationPage(),
+        routes: [
+          GoRoute(
+            name: 'signUp',
+            path: 'sign-up',
+            builder: (context, state) => const SignUpPage(),
+          ),
+        ],
+      ),
+      GoRoute(
+        name: 'item',
+        path: '/:itemId/specifications',
+        builder: (context, state) => ItemSpecificationsPage(
+            itemId: state.pathParameters['itemId']!,
+            itemName: state.uri.queryParameters['itemName']!,
+            sectionName: state.uri.queryParameters['sectionName']!,
+            boxName: state.uri.queryParameters['boxName']!),
+      ),
+      GoRoute(
+        name: 'camera',
+        path: '/camera',
+        builder: (context, state) => TakePictureScreen(
+          camera: state.extra as CameraDescription,
+        ),
+      ),
+    ]
+);
 
 class RouterCubit extends Cubit<GoRouter> {
   final CameraDescription camera;
@@ -152,6 +158,10 @@ class RouterCubit extends Cubit<GoRouter> {
     }
   }
 
+  void goComingSoon() {
+    state.goNamed('comingSoon');
+  }
+
   void goFavorites() {
     state.goNamed('favorites');
   }
@@ -179,16 +189,15 @@ class RouterCubit extends Cubit<GoRouter> {
   }
 
   void goItemSpecifications(String itemId, String itemName) {
-    state.pushNamed('item', pathParameters: {
-      //'boxId': state.routerDelegate.currentConfiguration.pathParameters['boxId']!,
-      //'sectionId': state.routerDelegate.currentConfiguration.pathParameters['sectionId']!,
-      'itemId': itemId,
-    }, queryParameters: {
-      'boxName': state
-          .routerDelegate.currentConfiguration.uri.queryParameters['boxName']!,
-      'sectionName': state.routerDelegate.currentConfiguration.uri
-          .queryParameters['sectionName']!,
-      'itemName': itemName,
-    });
+    state.pushNamed('item',
+        pathParameters: {
+          'itemId': itemId,
+        },
+        queryParameters: {
+          'boxName': state.routerDelegate.currentConfiguration.uri.queryParameters['boxName']!,
+          'sectionName': state.routerDelegate.currentConfiguration.uri.queryParameters['sectionName']!,
+          'itemName': itemName,
+        }
+    );
   }
 }

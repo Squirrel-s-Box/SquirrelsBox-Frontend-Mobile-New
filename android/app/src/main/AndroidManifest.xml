@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:label="squirrels_box_2"
+        android:label="SB"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,6 +1,8 @@
 export 'authentication/presentation/pages/authentication_page.dart';
+export 'authentication/presentation/pages/sign_up_page.dart';
 export 'downloads/pages/downloads_page.dart';
 export 'favorites/pages/favorites_page.dart';
+export 'home/pages/coming_soon_page.dart';
 export 'home/pages/home_page.dart';
 export 'management/presentation/pages/boxes_page.dart';
 export 'management/presentation/pages/items_page.dart';

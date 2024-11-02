@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../management/domain/models/box.dart';
 
 setPreference(String key, dynamic value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,7 +42,7 @@ deletePreference(String key) async {
   prefs.remove(key);
 }
 
-cleanPreference(String useCase) async {
+cleanPreference({String useCase = ''}) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   List<String> lstNoRemove = [
@@ -50,4 +54,40 @@ cleanPreference(String useCase) async {
       await prefs.remove(key);
     }
   });
+}
+
+/// Manage Last Boxes Used
+Future<void> addLastBoxUsed(Box box) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> boxList = prefs.getStringList('boxes_used') ?? [];
+
+  Map<String, dynamic> newMap = box.toMap();
+  String newMapString = jsonEncode(newMap);
+
+  boxList.remove(newMapString); // Remove if exist
+  boxList.insert(0, newMapString); // Add at the start
+
+  if (boxList.length > 3) {
+    boxList = boxList.sublist(0, 3);
+  }
+
+  await prefs.setStringList('boxes_used', boxList);
+}
+
+Future<List<Box>> getLastBoxesUsed() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> boxList = prefs.getStringList('boxes_used') ?? [];
+  return boxList.map((box) {
+    return Box.fromMapLocal(jsonDecode(box));
+  }).toList();
+}
+
+Future<void> deleteBoxUsed(int id) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> boxList = prefs.getStringList('boxes_used') ?? [];
+  boxList = boxList.where((jsonStr) {
+    Map<String, dynamic> map = jsonDecode(jsonStr);
+    return map['id'] != id;
+  }).toList();
+  await prefs.setStringList('boxes_used', boxList);
 }

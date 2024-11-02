@@ -1,8 +1,5 @@
 import 'dart:convert';
 
-import '../../../../util/domain/models/response/base_response.dart';
-import '../session_info.dart';
-
 class RefreshTokenResponse {
   final String token;
   final String refreshToken;

@@ -4,6 +4,7 @@ import 'package:squirrels_box_2/features/management/services/management_api_serv
 import '../../util/constants/strings.dart';
 import '../../util/domain/models/response/base_response.dart';
 import '../../util/logger/app_logger.dart';
+import '../../util/preferences/app_shared_preferences.dart';
 import '../domain/models/box.dart';
 import '../domain/models/responses/box_list_response.dart';
 
@@ -61,10 +62,26 @@ class BoxService {
 
   Future<BaseResponse> deleteBox(int boxId, {bool cascade = false}) async {
     final url = '$boxApi/$boxId/$cascade';
-    final resp = await _dio.deleteRequest(url);
-    final data = BaseResponse.fromMap(resp);
 
-    return data;
+    try {
+      AppLogger.info(boxId);
+      final resp = await _dio.deleteRequest(url);
+      AppLogger.info(resp);
+
+      final data = BaseResponse.fromMap(resp);
+
+      await deleteBoxUsed(boxId);
+
+      return data;
+
+    } on DioException catch (e) {
+      AppLogger.error('DioException: ${e.message}');
+      rethrow;
+
+    } catch (e) {
+      AppLogger.error('Unexpected error: $e');
+      throw DioException(requestOptions: RequestOptions(path: url), error: 'Unexpected error occurred.');
+    }
   }
 
 }
