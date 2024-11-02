@@ -43,7 +43,7 @@ class ProfilePage extends StatelessWidget {
           const PrincipalTitle(title: "Storage"),
           const SizedBox(height: 10),
           const StorageWidget(
-              name: "Boxes", icon: Icons.book, boxesTotals: 6, boxesUsed: 2),
+              name: "Boxes", icon: Icons.inventory_2, boxesTotals: 6, boxesUsed: 2),
           const SizedBox(height: 7),
           const StorageWidget(
               name: "Sections",
@@ -52,7 +52,7 @@ class ProfilePage extends StatelessWidget {
               boxesUsed: 3),
           const SizedBox(height: 7),
           const StorageWidget(
-              name: "Items", icon: Icons.apple, boxesTotals: 6, boxesUsed: 6),
+              name: "Items", icon: Icons.category, boxesTotals: 6, boxesUsed: 6),
           const SizedBox(height: 7),
           ElevatedButton(
               style: ElevatedButton.styleFrom(

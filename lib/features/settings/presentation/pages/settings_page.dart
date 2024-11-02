@@ -42,15 +42,15 @@ class SettingsPage extends StatelessWidget {
           const SizedBox(height: 5),
           const Row(
             children: [
-              const Icon(Icons.menu_book),
-              const SizedBox(width: 5),
-              const NormalText(title: "Terms of Service")
+              Icon(Icons.menu_book),
+              SizedBox(width: 5),
+              NormalText(title: "Terms of Service")
             ],
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              Icon(Icons.menu_book),
+              Icon(Icons.policy),
               const SizedBox(width: 5),
               NormalText(title: "Privacy Policy")
             ],

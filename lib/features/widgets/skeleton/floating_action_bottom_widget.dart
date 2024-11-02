@@ -53,7 +53,7 @@ class FloatingActionBottomWidget extends StatelessWidget {
               offset: const Offset(0, 10),
               child: Icon(manage
                     ? Icons.add
-                    : Icons.folder_open,
+                    : Icons.inventory_2,
                 size: 30,
                 color: manage
                     ? AppColors.darkBlue
